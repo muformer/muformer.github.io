@@ -1,5 +1,5 @@
 {% capture logo_path %}{{ site.logo }}{% endcapture %}
-
+{% if site.masterhead %}
 <div class="masthead">
   <div class="masthead__inner-wrap">
     <div class="masthead__menu">
@@ -33,3 +33,5 @@
     </div>
   </div>
 </div>
+{% endif %}
+

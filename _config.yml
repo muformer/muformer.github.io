@@ -16,9 +16,9 @@ minimal_mistakes_skin    : "default" # "air", "aqua", "contrast", "dark", "dirt"
 
 # Site Settings
 locale                   : "en-US"
-title                    : "Muformer: Prediction of Protein Landscape"
+title                    : "μFormer"
 title_separator          : "-"
-subtitle                 : # site tagline that appears below site title in masthead
+subtitle                 : "A Deep Learning Framework for Accurate Protein Fitness Landscape Modeling" # site tagline that appears below site title in masthead
 name                     : 
 description              :
 url                      : "https://pengtb.github.io" # the base hostname & protocol for your site e.g. "https://mmistakes.github.io"
@@ -58,10 +58,11 @@ reCaptcha:
   secret                 :
 atom_feed:
   path                   : # blank (default) uses feed.xml
-  hide                   : # true, false (default)
+  hide                   : true # true, false (default)
 search                   : # true, false (default)
 search_full_content      : # true, false (default)
 search_provider          : # lunr (default), algolia, google
+masterhead               : false
 lunr:
   search_within_pages    : # true, false (default)
 algolia:
@@ -279,14 +280,13 @@ compress_html:
 
 # Defaults
 defaults:
-  # _posts
   - scope:
-      path: ""
-      type: posts
+      path: "_pages"
+      type: pages
+      layout: single
     values:
-      layout: wide
       author_profile: false
       read_time: false
-      comments: # true
+      comments: false
       share: false
       related: false

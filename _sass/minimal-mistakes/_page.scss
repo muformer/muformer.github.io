@@ -36,16 +36,18 @@ body {
 }
 
 .page {
-  @include breakpoint($large) {
-    float: right;
-    width: calc(100% - #{$right-sidebar-width-narrow});
-    padding-right: $right-sidebar-width-narrow;
-  }
+  // @include breakpoint($large) {
+  //   float: right;
+  //   width: calc(100% - #{$right-sidebar-width-narrow});
+  //   padding-right: $right-sidebar-width-narrow;
+  // }
 
-  @include breakpoint($x-large) {
-    width: calc(100% - #{$right-sidebar-width});
-    padding-right: $right-sidebar-width;
-  }
+  // @include breakpoint($x-large) {
+  //   width: calc(100% - #{$right-sidebar-width});
+  //   padding-right: $right-sidebar-width;
+  // }
+  margin: 0 auto;
+  max-width: 90%;
 
   .page__inner-wrap {
     float: left;
@@ -71,6 +73,7 @@ body {
 .page__title {
   margin-top: 0;
   line-height: 1;
+  text-align: center;
 
   a {
     color: $text-color;
@@ -85,6 +88,8 @@ body {
 .page__lead {
   font-family: $global-font-family;
   font-size: $type-size-4;
+  text-align: center;
+  margin: 0 auto;
 }
 
 .page__content {
@@ -197,6 +202,7 @@ body {
     animation: $intro-transition;
     -webkit-animation-delay: 0.25s;
     animation-delay: 0.25s;
+    // margin: 0 10%;
 
     a {
       color: #fff;
@@ -209,6 +215,9 @@ body {
       @include breakpoint($x-large) {
         max-width: $x-large;
       }
+      p {
+        text-align: center;
+      }
     }
 
     .page__title,
@@ -220,7 +229,8 @@ body {
     }
 
     .page__lead {
-      max-width: $medium;
+      // max-width: $medium;
+      max-width: $max-width;
     }
 
     .page__title {
