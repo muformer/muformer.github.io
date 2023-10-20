@@ -157,6 +157,9 @@ footer:
 include:
   - .htaccess
   - _pages
+  - assets
+  - assets/predictions
+  - assets/figures
 exclude:
   - "*.sublime-project"
   - "*.sublime-workspace"
@@ -290,3 +293,8 @@ defaults:
       comments: false
       share: false
       related: false
+  # images
+  - scope:
+      path: "assets/figures"
+    values:
+      image: true
