@@ -17,6 +17,7 @@ header:
     th {
         font-size: 0.8em;
         text-align: center;
+        cursor: pointer;
     }
     td {
         font-size: 0.8em; 
@@ -24,6 +25,16 @@ header:
     }
     i {
         cursor: pointer;
+    }
+    summary {
+        display: inline;
+        cursor: pointer;
+    }
+    summary::-webkit-details-marker {
+        display: none;
+    }
+    details[open] summary * i[class="fas fa-angle-right"] {
+        transform: rotate(90deg);
     }
 </style>
 <!-- <link rel="stylesheet" type="text/css" href="https://www.ebi.ac.uk/pdbe/pdb-component-library/css/pdbe-molstar-3.1.0.css"> -->
@@ -38,40 +49,52 @@ header:
     <p class="text-justify" style="font-size: large">Protein engineering is essential for a variety of applications, such as designing biologic drugs, optimizing enzymes, and developing novel functional molecules. Accurate protein fitness landscape modeling, such as predicting protein properties in sequence space, is critical for efficient protein engineering. Yet, due to the complexity of the landscape and high-dimensional sequence space, it remains as an unsolved problem. In this work, we present μFormer, a deep learning framework that combines a pre-trained protein language model with three scoring modules targeting protein features at multiple levels, to tackle this grand challenge. μFormer achieves state-of-the-art performance across diverse tasks, including predicting high-order mutants, modeling epistatic effects, handling insertion/deletion mutations, and generalizing to out-of-distribution scenarios. On the basis of prediction power, integrating μFormer with a reinforcement learning framework enables efficient exploration of the vast mutant space. We showcase that this integrated approach can design protein variants with up to 5-point mutations and potentially significant enhancement in activity for engineering tasks. The results highlight μFormer as a powerful and versatile tool for protein design, accelerating the development of innovative proteins tailored for specific applications.</p>
 </div>
 <div id="results" style="width:100%">
-    <h1 id="header-results">Results</h1>
-    <h2 id="header-results-fitness">Fitness score</h2>
-    <div id="container-results-fitness" style="width:100%">
-        <div style="display:inline-block;width:100%;height:470px">
-            <div id="fitness-surfaceplot" style="position: absolute; right: 0px"></div>
-            <div style="float: left; width:45%">
-                <table id="fitness-table" style="width:100%;display:table;height:420px"></table>
-                <p id="pagination-para" style="font-size: medium"></p>
+    <details open>
+        <summary>
+            <h1 id="header-results">Results  <i class="fas fa-angle-right"></i></h1>
+        </summary>
+        <h2 id="header-results-fitness">Fitness score</h2>
+        <div id="container-results-fitness" style="width:100%">
+            <div style="display:inline-block;width:100%;height:470px">
+                <div id="fitness-surfaceplot" style="position: absolute; right: 0px"></div>
+                <div style="float: left; width:45%">
+                    <table id="fitness-table" style="width:100%;display:table;height:420px"></table>
+                    <p id="pagination-para" style="font-size: medium"></p>
+                </div>
+            </div>
+            <div id="fitness-query" style="font-size:medium;display:block;width:100%"></div>
+            <div id="fitness-score" style="font-size:medium;display:block;width:100%">
+                <!-- <p id="fitness-score-exp">Experimental Scores: </p> -->
+                <!-- <p id="fitness-score-predicted">Predicted Scores: </p> -->
+                <a href="#results" class="btn btn--primary" id="fitness-search" style="width:47%"><div style="margin:auto">Go</div></a>
+                <a href="#results" class="btn btn--primary" id="fitness-search-reset" style="width:47%"><div style="margin:auto">Reset</div></a>
             </div>
         </div>
-        <div id="fitness-query" style="font-size:medium;display:block;width:100%"></div>
-        <div id="fitness-score" style="font-size:medium;display:block;width:100%">
-            <!-- <p id="fitness-score-exp">Experimental Scores: </p> -->
-            <!-- <p id="fitness-score-predicted">Predicted Scores: </p> -->
-            <a href="#results" class="btn btn--primary" id="fitness-search" style="width:47%"><div style="margin:auto">Go</div></a>
-            <a href="#results" class="btn btn--primary" id="fitness-search-reset" style="width:47%"><div style="margin:auto">Reset</div></a>
-        </div>
-    </div>
-    <div id="fitness-structure" style="position:relative; height: 400px; width:94%"></div>
-    <h2 id="header-results-epistatic">Epistatic effects</h2>
+        <div id="fitness-structure" style="position:relative; height: 400px; width:94%"></div>
+        <h2 id="header-results-epistatic">Epistatic effects</h2>
+    </details>
 </div>
 <div id="applications">
-    <h1 id="header-applications">Applications</h1>
-    <h2 id="header-applications-lactamase">Beta-lactamase</h2>
-    <div id="container-applications-lactamase" style="width: 100%">
-        <img src="assets/figures/rl_density.gif" alt="rl_density" width="40%" style="margin: left 0;"/>
-        <img src="assets/figures/rl_topk.gif" alt="rl_topk" width="55%" style="margin: right 0;"/>
-    </div>
-    <h2 id="header-applications-antibody">SARS-CoV2 antibody</h2>
+    <details open>
+        <summary>
+            <h1 id="header-applications">Applications  <i class="fas fa-angle-right"></i></h1>
+        </summary>
+        <h2 id="header-applications-lactamase">Beta-lactamase</h2>
+        <div id="container-applications-lactamase" style="width: 100%">
+            <img src="assets/figures/rl_density.gif" alt="rl_density" width="40%" style="margin: left 0;"/>
+            <img src="assets/figures/rl_topk.gif" alt="rl_topk" width="55%" style="margin: right 0;"/>
+        </div>
+        <h2 id="header-applications-antibody">SARS-CoV2 antibody</h2>
+</details>
 </div>
 <div id="method">
-    <h1 id="header-method">Method & Concept</h1>
-    <h2 id="header-method-pretraining">Protein LLM</h2>
-    <h2 id="header-method-rl">Reinforcement Learning</h2>
+    <details open>
+        <summary>
+            <h1 id="header-method">Method & Concept  <i class="fas fa-angle-right"></i></h1>
+        </summary>
+        <h2 id="header-method-pretraining">Protein LLM</h2>
+        <h2 id="header-method-rl">Reinforcement Learning</h2>
+    </details>
 </div>
 
 <script>
@@ -123,57 +146,26 @@ header:
         }).sort(function(a, b) {
             return a - b;});
     }
-    function PreparePlotData(rows, xycolname='pos', zcolname='prediction') {
-        var subset_rows = rows.filter(function(row) {
-            return (row[xycolname].split(',').length == 2);
+    function PreparePlotData(rows) {
+        console.log(rows[0])
+        var y_names = Object.keys(rows[0]);
+        y_names = y_names.filter(function(y) {return y != 'x';});
+        var x_names = rows.map(function(row) {
+            return row['x'];
         });
-        var xys = subset_rows.map(function(row) {return row[xycolname];});
-        xys = removeduplicates(xys);
-        var avg_zs = [];
-        for (xy of xys) {
-            var filtered_rows = subset_rows.filter(function(row) {
-                return row[xycolname] == xy;
-            });
-            var zs = filtered_rows.map(function(row) {return row[zcolname];});
-            var avg_z = zs.reduce(function(a, b) {return parseFloat(a) + parseFloat(b);}) / zs.length;
-            avg_zs.push(avg_z);
-        }
-        summed_rows = [];
-        var reverse_subset_rows = [];
-        for (xy of xys) {
-            var xy = xy.split(',');
-            summed_rows.push({
-                'x': xy[0],
-                'y': xy[1],
-                'z': avg_zs[xys.indexOf(xy.join(','))]
-            });
-            reverse_subset_rows.push({
-                'x': xy[1],
-                'y': xy[0],
-                'z': avg_zs[xys.indexOf(xy.join(','))]
-            });
-        }
-        summed_rows = summed_rows.concat(reverse_subset_rows);
-        var x_names = summed_rows.map(function(row) {return row['x'];})
-        x_names = removeduplicates(x_names);
-        var y_names = summed_rows.map(function(row) {return row['y'];})
-        y_names = removeduplicates(y_names);
         var z_data = [];
-        for (var i = 0; i < y_names.length; i++) {
-            var z_row = [];
-            for (var j = 0; j < x_names.length; j++) {
-                var filtered_row = summed_rows.filter(function(row) {
-                    return row['x'] == x_names[j] && row['y'] == y_names[i];
-                });
-                if (filtered_row.length == 0) {
-                    z_value = NaN;
-                } else {
-                    z_value = filtered_row[0]['z'];
+        var datarows = rows.map(function(row) {
+            var newrow = {};
+            for (var key in row) {
+                if (key != 'x') {
+                    newrow[key] = parseFloat(row[key]);
                 }
-                z_row.push(z_value);
             }
-            z_data.push(z_row);
-        }
+            return newrow;
+        });
+        var z_data = datarows.map(function(row) {
+            return Object.values(row);
+        });
         return [x_names, y_names, z_data];
     }
     function PlotSurface(x_names, y_names, z_data, figpos) {
@@ -323,15 +315,10 @@ header:
         }
         $("#"+"fitness-mutation-div-" + i).append("<br>");
     }
-    function UpdateMutationOptions(rows, mutation_select_id="#fitness-mutation-select-1", mutation_colname='mutant') {
-        var mutation_options = [];
-        for (row of rows) {
-            var mutants = row[mutation_colname].split(',');
-            for (mutant of mutants) {
-                mutation_options.push(mutant);
-            }
-        }
-        mutation_options = removeduplicates(mutation_options).sort(function(a, b) {return a.localeCompare(b);});
+    function UpdateMutationOptions(rows, mutation_select_id="#fitness-mutation-select-1", mutation_colname='mutation') {
+        mutation_options = rows.map(function(row) {
+            return row[mutation_colname];
+        });
         for (mutation of mutation_options) {
             $(mutation_select_id).append("<option value='" + mutation + "'>" + "</option>");
         }
@@ -367,40 +354,43 @@ header:
         var viewerContainer = document.getElementById('fitness-structure');
         viewerInstance.render(viewerContainer, options);
         
-        LoadTable('assets/predictions/aav.tsv').then(function(rows) {
-            TablePipeline(rows);
-            AddQueryMutation(rows, 'mutant', 'fitness-query', 5, 1);
-            UpdateMutationOptions(rows);
-            $("#fitness-query").on('click', "i[class='fas fa-plus']", function() {
-                var curridx = parseInt($(this).attr('curridx'));
-                AddQueryMutation(rows, 'mutant', 'fitness-query', 5, curridx+1, true);
-                $(this).remove();
-                UpdateMutationOptions(rows, "#fitness-mutation-select-"+(curridx+1));
-            });
-            $("#fitness-query").on('click', "i[class='fas fa-minus']", function() {
-                $(this).parent().remove();
-            });
-            $("#fitness-search").click(function() {
-                var query_mutations = [];
-                $.each($("#fitness-query input"), function(index, element) {
-                    query_mutations.push($(element).val());
-                });
-                query_mutations = query_mutations.filter(function(query_mutation) {
-                    return query_mutation != '';
-                });
-                var query_mutations_str = removeduplicates(query_mutations).join(',');
-                var target_rows = SubsetTable(rows, query_mutations_str, 'mutant')
-                TablePipeline(target_rows);
-            });
-            $("#fitness-search-reset").click(function() {
+        LoadTable('assets/tables/predictions/aav_less5.tsv').then(function(rows) {
+            LoadTable('assets/tables/mutations/aav_less5_mutations.tsv').then(function(mutations) {
                 TablePipeline(rows);
-                $("#fitness-query").empty();
                 AddQueryMutation(rows, 'mutant', 'fitness-query', 5, 1);
-                UpdateMutationOptions(rows);
+                UpdateMutationOptions(mutations);
+                $("#fitness-query").on('click', "i[class='fas fa-plus']", function() {
+                    var curridx = parseInt($(this).attr('curridx'));
+                    AddQueryMutation(rows, 'mutant', 'fitness-query', 5, curridx+1, true);
+                    $(this).remove();
+                    UpdateMutationOptions(mutations, "#fitness-mutation-select-"+(curridx+1));
+                });
+                $("#fitness-query").on('click', "i[class='fas fa-minus']", function() {
+                    $(this).parent().remove();
+                });
+                $("#fitness-search").click(function() {
+                    var query_mutations = [];
+                    $.each($("#fitness-query input"), function(index, element) {
+                        query_mutations.push($(element).val());
+                    });
+                    query_mutations = query_mutations.filter(function(query_mutation) {
+                        return query_mutation != '';
+                    });
+                    var query_mutations_str = removeduplicates(query_mutations).join(',');
+                    var target_rows = SubsetTable(rows, query_mutations_str, 'mutant')
+                    TablePipeline(target_rows);
+                });
+                $("#fitness-search-reset").click(function() {
+                    TablePipeline(rows);
+                    $("#fitness-query").empty();
+                    AddQueryMutation(rows, 'mutant', 'fitness-query', 5, 1);
+                    UpdateMutationOptions(mutations);
+                });
             });
-            var [x_names, y_names, z_data] = PreparePlotData(rows);
-            PlotSurface(x_names, y_names, z_data, 'fitness-surfaceplot');
-            
+            LoadTable('assets/tables/plotdata/aav_less5_pred.tsv').then(function(predictions) {
+                var [x_names, y_names, z_data] = PreparePlotData(predictions);
+                PlotSurface(x_names, y_names, z_data, 'fitness-surfaceplot');
+            });
         });
         
     });
