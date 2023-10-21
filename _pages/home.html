@@ -44,9 +44,10 @@ header:
 <script type="text/javascript" src="https://cdn.plot.ly/plotly-2.25.2.min.js" charset="utf-8"></script>
 <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/d3@7"></script>
 
-<div id="summary">
+<div id="summary" style="padding-bottom:1em">
+    <img src="assets/figures/model_overview.png" alt="overview" width="100%">
     <h1 id="header-summary" class="text-center">Abstract</h1>
-    <p class="text-justify" style="font-size: large">Protein engineering is essential for a variety of applications, such as designing biologic drugs, optimizing enzymes, and developing novel functional molecules. Accurate protein fitness landscape modeling, such as predicting protein properties in sequence space, is critical for efficient protein engineering. Yet, due to the complexity of the landscape and high-dimensional sequence space, it remains as an unsolved problem. In this work, we present μFormer, a deep learning framework that combines a pre-trained protein language model with three scoring modules targeting protein features at multiple levels, to tackle this grand challenge. μFormer achieves state-of-the-art performance across diverse tasks, including predicting high-order mutants, modeling epistatic effects, handling insertion/deletion mutations, and generalizing to out-of-distribution scenarios. On the basis of prediction power, integrating μFormer with a reinforcement learning framework enables efficient exploration of the vast mutant space. We showcase that this integrated approach can design protein variants with up to 5-point mutations and potentially significant enhancement in activity for engineering tasks. The results highlight μFormer as a powerful and versatile tool for protein design, accelerating the development of innovative proteins tailored for specific applications.</p>
+    <p class="text-justify" style="font-size:large;width:80%;margin: 0 auto">Protein engineering is essential for a variety of applications, such as designing biologic drugs, optimizing enzymes, and developing novel functional molecules. Accurate protein fitness landscape modeling, such as predicting protein properties in sequence space, is critical for efficient protein engineering. Yet, due to the complexity of the landscape and high-dimensional sequence space, it remains as an unsolved problem. In this work, we present μFormer, a deep learning framework that combines a pre-trained protein language model with three scoring modules targeting protein features at multiple levels, to tackle this grand challenge. μFormer achieves state-of-the-art performance across diverse tasks, including predicting high-order mutants, modeling epistatic effects, handling insertion/deletion mutations, and generalizing to out-of-distribution scenarios. On the basis of prediction power, integrating μFormer with a reinforcement learning framework enables efficient exploration of the vast mutant space. We showcase that this integrated approach can design protein variants with up to 5-point mutations and potentially significant enhancement in activity for engineering tasks. The results highlight μFormer as a powerful and versatile tool for protein design, accelerating the development of innovative proteins tailored for specific applications.</p>
 </div>
 <div id="results" style="width:100%">
     <details open>
@@ -59,15 +60,15 @@ header:
                 <div id="fitness-surfaceplot" style="position: absolute; right: 0px"></div>
                 <div style="float: left; width:45%">
                     <table id="fitness-table" style="width:100%;display:table;height:420px"></table>
-                    <p id="pagination-para" style="font-size: medium"></p>
+                    <div id="fitness-pagination-container" style="font-size: medium;margin: 0 auto;text-align:center"></div>
                 </div>
             </div>
             <div id="fitness-query" style="font-size:medium;display:block;width:100%"></div>
             <div id="fitness-score" style="font-size:medium;display:block;width:100%">
                 <!-- <p id="fitness-score-exp">Experimental Scores: </p> -->
                 <!-- <p id="fitness-score-predicted">Predicted Scores: </p> -->
-                <a href="#results" class="btn btn--primary" id="fitness-search" style="width:47%"><div style="margin:auto">Go</div></a>
-                <a href="#results" class="btn btn--primary" id="fitness-search-reset" style="width:47%"><div style="margin:auto">Reset</div></a>
+                <a class="btn btn--primary" id="fitness-search" style="width:47%"><div style="margin:auto">Go</div></a>
+                <a class="btn btn--primary" id="fitness-search-reset" style="width:47%"><div style="margin:auto">Reset</div></a>
             </div>
         </div>
         <div id="fitness-structure" style="position:relative; height: 400px; width:94%"></div>
@@ -147,7 +148,6 @@ header:
             return a - b;});
     }
     function PreparePlotData(rows) {
-        console.log(rows[0])
         var y_names = Object.keys(rows[0]);
         y_names = y_names.filter(function(y) {return y != 'x';});
         var x_names = rows.map(function(row) {
@@ -236,12 +236,12 @@ header:
         };
         return sorted
     }
-    function UpdatePagination(parsed, pagebtn_idprefix="page-", pagebtn_loc="pagination-para", numrows=10) {
+    function UpdatePagination(parsed, pagebtn_idprefix="page-", pagebtn_loc="fitness-pagination-container", numrows=10) {
         $("#"+pagebtn_loc).html("Page: ");
         var numpages = Math.ceil(parsed.length / numrows);
         const shownumpages = 3;
         for (let i = 1; i <= numpages; i++) {
-            $("#"+pagebtn_loc).append("<a name='page-button' id='" + pagebtn_idprefix + i + "' href='#browse' class='btn btn--inverse'>" + i + "</a> ");
+            $("#"+pagebtn_loc).append("<a name='page-button' id='" + pagebtn_idprefix + i + "' class='btn btn--inverse'>" + i + "</a> ");
             if ((i <= shownumpages) || (i === numpages)) {
             } else {
                 $("#"+pagebtn_idprefix + i).hide();
@@ -253,22 +253,21 @@ header:
             } else {
             };
         };
-        $("#"+pagebtn_idprefix+"1").attr("class", "btn btn--light-outline");
+        $("#"+pagebtn_idprefix+"1").attr("style", "font-size:0.9em;border-width:2px");
     }
-    function ChangePage(pageindex, pagebtn_idprefix="page-", pagebtn_loc="pagination-para") {
+    function ChangePage(pageindex, pagebtn_idprefix="page-", pagebtn_loc="fitness-pagination-container") {
         var pageindex = parseInt(pageindex);
         const shownumpages = 2;
-        var numpages = $("#pagination-para a").length;
+        var numpages = $("#fitness-pagination-container a").length;
         $.each($("#"+pagebtn_loc+" a"), function(index, element) {
             $(element).hide();
         });
-        $("a[class='btn btn--light-outline']").attr("class", "btn btn--inverse");
         var firstpageindex = Math.max(1, pageindex - shownumpages);
         var lastpageindex = Math.min(pageindex + shownumpages, numpages);
         for (let i = firstpageindex; i <= lastpageindex; i++) {
             $("#"+pagebtn_idprefix+ i).show();
         };
-        $("#page-" + pageindex).attr("class", "btn btn--light-outline");
+        $("#page-" + pageindex).attr("style", "font-size:1em");
         if (firstpageindex > 1) {
             $("#"+pagebtn_idprefix+"1").show();
         };
