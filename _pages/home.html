@@ -37,23 +37,26 @@ header:
     <h1 id="header-summary" class="text-center">Abstract</h1>
     <p class="text-justify" style="font-size: large">Protein engineering is essential for a variety of applications, such as designing biologic drugs, optimizing enzymes, and developing novel functional molecules. Accurate protein fitness landscape modeling, such as predicting protein properties in sequence space, is critical for efficient protein engineering. Yet, due to the complexity of the landscape and high-dimensional sequence space, it remains as an unsolved problem. In this work, we present μFormer, a deep learning framework that combines a pre-trained protein language model with three scoring modules targeting protein features at multiple levels, to tackle this grand challenge. μFormer achieves state-of-the-art performance across diverse tasks, including predicting high-order mutants, modeling epistatic effects, handling insertion/deletion mutations, and generalizing to out-of-distribution scenarios. On the basis of prediction power, integrating μFormer with a reinforcement learning framework enables efficient exploration of the vast mutant space. We showcase that this integrated approach can design protein variants with up to 5-point mutations and potentially significant enhancement in activity for engineering tasks. The results highlight μFormer as a powerful and versatile tool for protein design, accelerating the development of innovative proteins tailored for specific applications.</p>
 </div>
-<div id="results">
+<div id="results" style="width:100%">
     <h1 id="header-results">Results</h1>
     <h2 id="header-results-fitness">Fitness score</h2>
-    <div id="container-results-fitness" style="display: inline-block; height: 600px; width:45%">
-        <div id="fitness-surfaceplot" style="position: absolute; right: 0px"></div>
-        <div width="45%" style="float: left">
-            <table id="fitness-table"></table>
-            <p id="pagination-para" style="font-size: medium"></p>
+    <div id="container-results-fitness" style="width:100%">
+        <div style="display:inline-block;width:100%;height:470px">
+            <div id="fitness-surfaceplot" style="position: absolute; right: 0px"></div>
+            <div style="float: left; width:45%">
+                <table id="fitness-table" style="width:100%;display:table;height:420px"></table>
+                <p id="pagination-para" style="font-size: medium"></p>
+            </div>
         </div>
-        <div width="100%" id="fitness-score" style="font-size:medium;position: left; right: 0px">
-            <p id="fitness-score-exp">Experimental Scores: </p>
-            <p id="fitness-score-predicted">Predicted Scores: </p>
-            <a href="#results" class="btn btn--primary" id="fitness-search" style="display:flex"><div style="margin:auto">Go</div></a>
-        </div>
-        <div width="45%" id="fitness-query" style="font-size:medium;display:block">
+        <div id="fitness-query" style="font-size:medium;display:block;width:100%"></div>
+        <div id="fitness-score" style="font-size:medium;display:block;width:100%">
+            <!-- <p id="fitness-score-exp">Experimental Scores: </p> -->
+            <!-- <p id="fitness-score-predicted">Predicted Scores: </p> -->
+            <a href="#results" class="btn btn--primary" id="fitness-search" style="width:47%"><div style="margin:auto">Go</div></a>
+            <a href="#results" class="btn btn--primary" id="fitness-search-reset" style="width:47%"><div style="margin:auto">Reset</div></a>
         </div>
     </div>
+    <div id="fitness-structure" style="position:relative; height: 400px; width:94%"></div>
     <h2 id="header-results-epistatic">Epistatic effects</h2>
 </div>
 <div id="applications">
@@ -90,7 +93,7 @@ header:
     function ShowPagedTable(rows, tablepos, colnames, pageidx, recperpage=10) {
         subset_rows = rows.slice(pageidx*recperpage, (pageidx+1)*recperpage);
         $(tablepos).empty();
-        $(tablepos).html('<thead><tr></tr></thead><tbody></tbody>');
+        $(tablepos).html("<thead style='width: 100%;'><tr style='width: 100%;'></tr></thead><tbody style='width: 100%;'></tbody>");
         for (colname of colnames) {
             var toshow_colname = transformcolname(colname);
             $(tablepos + ' thead tr').append("<th>" + toshow_colname + '</th>');
@@ -99,7 +102,7 @@ header:
             var newrow = '<tr>'
             for (colname of colnames) {
                 var toshow_content = row[colname];
-                newrow += '<td>' + toshow_content + '</td>';
+                newrow += "<td style='white-space: nowrap;'>" + toshow_content + '</td>';
             }
             newrow += '</tr>';
             $(tablepos + ' tbody').append(newrow);
@@ -192,7 +195,7 @@ header:
             title: 'Fitness Landscape',
             autosize: true,
             width: 500,
-            height: 500,
+            height: 480,
             margin: {
                 l: 0,
                 r: 0,
@@ -308,15 +311,15 @@ header:
         } else {
             var number_suffix = "th";
         }
-        $("#"+query_loc).append("<div id='fitness-mutation-div-" + i + "' style='display:inline'></div>")
+        $("#"+query_loc).append("<div id='fitness-mutation-div-" + i + "' style='display:inline-block'></div>")
         $("#"+"fitness-mutation-div-" + i).append("<label for='fitness-mutation-" + i + "' style='display:inline'>" + i + "<sup>" + number_suffix + "</sup> Mutation:&nbsp&nbsp</label>");
         $("#"+"fitness-mutation-div-" + i).append("<input list='fitness-mutation-select-" + i + "' id='fitness-mutation-" + i + "' style='width: 5em'>");
         $("#"+"fitness-mutation-div-" + i).append("<datalist id='fitness-mutation-select-" + i + "'></datalist>");
         if (i < maxnum_mutations) {
-            $("#"+"fitness-mutation-div-" + i).append("<i curridx="+i+" class='fas fa-plus' style='color: #323c4d;'></i>    ");
+            $("#"+"fitness-mutation-div-" + i).append("<i curridx="+i+" class='fas fa-plus' style='color: #323c4d;'></i>&nbsp&nbsp");
         }
         if (addminus && (i > 1)) {
-            $("#"+"fitness-mutation-div-" + i).append("<i curridx="+i+" class='fas fa-minus' style='color: #323c4d;'></i>    ");
+            $("#"+"fitness-mutation-div-" + i).append("<i curridx="+i+" class='fas fa-minus' style='color: #323c4d;'></i>&nbsp&nbsp");
         }
         $("#"+"fitness-mutation-div-" + i).append("<br>");
     }
@@ -334,8 +337,8 @@ header:
         }
         return mutation_options;
     }
-    function SubsetTable(rows, mutations, mutation_colname='mutant') {
-        var query_mutations = mutations.split(',');
+    function SubsetTable(rows, mutations_str, mutation_colname='mutant') {
+        var query_mutations = mutations_str.split(',');
         var next_rows = rows.filter(function(row) {
             return query_mutations.map(function(query_mutation) {
                 return row[mutation_colname].includes(query_mutation);
@@ -345,9 +348,27 @@ header:
         });
         return next_rows
     }
+    function TablePipeline(rows) {
+        ShowPagedTable(rows, '#fitness-table', ['mutant', 'score', 'prediction'], 0, 10);
+        UpdatePagination(rows);
+        $("a[name='page-button']").click(function() {
+            var pageindex = $(this).text();
+            ChangePage(pageindex);
+            ShowPagedTable(rows, '#fitness-table', ['mutant', 'score', 'prediction'], pageindex-1, 10);
+        });
+    }
     $(document).ready(function() {
+        var viewerInstance = new PDBeMolstarPlugin();
+        var options = {
+        moleculeId: '1cbs',
+        bgColor: {r:255, g:255, b:255},
+        hideControls: true,
+        }
+        var viewerContainer = document.getElementById('fitness-structure');
+        viewerInstance.render(viewerContainer, options);
+        
         LoadTable('assets/predictions/aav.tsv').then(function(rows) {
-            // ShowPagedTable(rows, '#fitness-table', ['mutant', 'score', 'prediction'], 0, 10);
+            TablePipeline(rows);
             AddQueryMutation(rows, 'mutant', 'fitness-query', 5, 1);
             UpdateMutationOptions(rows);
             $("#fitness-query").on('click', "i[class='fas fa-plus']", function() {
@@ -367,26 +388,21 @@ header:
                 query_mutations = query_mutations.filter(function(query_mutation) {
                     return query_mutation != '';
                 });
-                var query_mutations_str = query_mutations.join(',');
-                var target_rows = rows.filter(function(row) {
-                    return row['mutant'] == query_mutations_str;
-                });
-                if (target_rows.length == 0) {
-                    $("#fitness-score-exp").text("Experimental Scores: N/A");
-                    $("#fitness-score-predicted").text("Predicted Scores: N/A");
-                } else {
-                    $("#fitness-score-exp").text("Experimental Scores: " + target_rows[0]['score']);
-                    $("#fitness-score-predicted").text("Predicted Scores: " + target_rows[0]['prediction']);
-                }
+                var query_mutations_str = removeduplicates(query_mutations).join(',');
+                var target_rows = SubsetTable(rows, query_mutations_str, 'mutant')
+                TablePipeline(target_rows);
+            });
+            $("#fitness-search-reset").click(function() {
+                TablePipeline(rows);
+                $("#fitness-query").empty();
+                AddQueryMutation(rows, 'mutant', 'fitness-query', 5, 1);
+                UpdateMutationOptions(rows);
             });
             var [x_names, y_names, z_data] = PreparePlotData(rows);
             PlotSurface(x_names, y_names, z_data, 'fitness-surfaceplot');
-            // UpdatePagination(rows);
-            // $("a[name='page-button']").click(function() {
-            //    var pageindex = $(this).text();
-            //    ChangePage(pageindex);
-            //    ShowPagedTable(rows, '#fitness-table', ['mutant', 'score', 'prediction'], pageindex-1, 10);
-            //});
+            
         });
+        
     });
+    
 </script>
