@@ -258,6 +258,7 @@ header:
     function ChangePage(pageindex, pagebtn_idprefix="page-", pagebtn_loc="fitness-pagination-container") {
         var pageindex = parseInt(pageindex);
         const shownumpages = 2;
+        $("a[class='btn btn--inverse']").attr("style", "font-size:0.75em;border-width:1px");
         var numpages = $("#fitness-pagination-container a").length;
         $.each($("#"+pagebtn_loc+" a"), function(index, element) {
             $(element).hide();
@@ -267,7 +268,7 @@ header:
         for (let i = firstpageindex; i <= lastpageindex; i++) {
             $("#"+pagebtn_idprefix+ i).show();
         };
-        $("#page-" + pageindex).attr("style", "font-size:1em");
+        $("#page-" + pageindex).attr("style", "font-size:0.9em;border-width:2px");
         if (firstpageindex > 1) {
             $("#"+pagebtn_idprefix+"1").show();
         };
