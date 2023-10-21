@@ -168,20 +168,23 @@ header:
         });
         return [x_names, y_names, z_data];
     }
-    function PlotSurface(x_names, y_names, z_data, figpos) {
-        var data = [{
-            z: z_data,
-            type: 'surface',
-            contours: {
-                z: {
-                show:true,
-                usecolormap: true,
-                highlightcolor:"#42f462",
-                project:{z: true}
-                }
-            },
-            showscale: false
-        }];
+    function PlotSurface(x_names, y_names, z_datas, figpos) {
+        var data = z_datas.map(function(z_data) {
+            return {
+                z: z_data,
+                type: 'surface',
+                contours: {
+                    z: {
+                    show:true,
+                    usecolormap: true,
+                    highlightcolor:"#42f462",
+                    project:{z: true}
+                    }
+                },
+                showscale: false,
+                opacity: 0.5,
+            }
+        });
         var tick_step = 5;
         var layout = {
             title: 'Fitness Landscape',
@@ -388,8 +391,11 @@ header:
                 });
             });
             LoadTable('assets/tables/plotdata/aav_less5_pred.tsv').then(function(predictions) {
-                var [x_names, y_names, z_data] = PreparePlotData(predictions);
-                PlotSurface(x_names, y_names, z_data, 'fitness-surfaceplot');
+                LoadTable('assets/tables/plotdata/aav_less5_score.tsv').then(function(scores) {
+                    var [x_names, y_names, prediction_z_data] = PreparePlotData(predictions);
+                    var [x_names, y_names, scores_z_data] = PreparePlotData(scores);
+                    PlotSurface(x_names, y_names, [prediction_z_data], 'fitness-surfaceplot');
+                });
             });
         });
         
