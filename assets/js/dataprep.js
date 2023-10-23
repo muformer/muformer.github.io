@@ -13,7 +13,7 @@ async function LoadTable(tablefilepath) {
     });
     return rows;
 }
-function ShowPagedTable(rows, tablepos, colnames, pageidx, instance, recperpage=10) {
+function ShowPagedTable(rows, tablepos, colnames, pageidx, instance, recperpage=10, pos_offset=2) {
     subset_rows = rows.slice(pageidx*recperpage, (pageidx+1)*recperpage);
     $(tablepos).empty();
     $(tablepos).html("<thead style='width: 100%;'><tr style='width: 100%;'></tr></thead><tbody style='width: 100%;'></tbody>");
@@ -41,7 +41,7 @@ function ShowPagedTable(rows, tablepos, colnames, pageidx, instance, recperpage=
         var colname = $(this).attr("name");
         var coltext = $(this).text();
         var sorted = SortTable(rows, colname, ascending);
-        ShowPagedTable(sorted, '#fitness-table', ['mutant', 'score', 'prediction'], 0, instance, 10);
+        ShowPagedTable(sorted, '#fitness-table', ['mutant', 'score', 'prediction'], 0, instance, 10, pos_offset);
         if (ascending) {
             var icon = "<i class='fas fa-sort-up'></i>";
         } else {
@@ -52,7 +52,7 @@ function ShowPagedTable(rows, tablepos, colnames, pageidx, instance, recperpage=
     });
     $("td[name='mutant']").click(function() {
         var query_positions = $(this).text().split(',').map(function(mutation) {
-            return parseInt(mutation.slice(1, -1));
+            return parseInt(mutation.slice(1, -1))+pos_offset;
         });
         var instance_selection = query_positions.map(function(position) {
             return {
@@ -305,13 +305,13 @@ function ProcessQueries(inputpos='#fitness-query input', rows) {
     }
     return [target_rows, query_mutations]
 }
-function TablePipeline(rows, instance) {
-    ShowPagedTable(rows, '#fitness-table', ['mutant', 'score', 'prediction'], 0, instance, 10);
+function TablePipeline(rows, instance, pos_offset) {
+    ShowPagedTable(rows, '#fitness-table', ['mutant', 'score', 'prediction'], 0, instance, 10, pos_offset);
     
     UpdatePagination(rows);
     $("a[name='page-button']").click(function() {
         var pageindex = $(this).text();
         ChangePage(pageindex);
-        ShowPagedTable(rows, '#fitness-table', ['mutant', 'score', 'prediction'], pageindex-1, instance, 10);
+        ShowPagedTable(rows, '#fitness-table', ['mutant', 'score', 'prediction'], pageindex-1, instance, 10, pos_offset);
     });
 }

@@ -42,9 +42,8 @@ header:
 <script type="text/javascript" src="https://cdn.bootcdn.net/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
 <script type="text/javascript" src="https://www.ebi.ac.uk/pdbe/pdb-component-library/js/pdbe-molstar-plugin-3.1.0.js"></script>
 <script type="text/javascript" src="https://cdn.plot.ly/plotly-2.25.2.min.js" charset="utf-8"></script>
-<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+<script type="text/javascript" src="https://cdn.bootcdn.net/ajax/libs/d3/7.8.5/d3.min.js"></script>
 <script type="text/javascript" src="assets/js/dataprep.js"></script>
-<script type="text/javascript" src="assets/js/tem1_RL_surface.js"></script>
 
 <div id="summary" style="padding-bottom:1em">
     <h1 id="header-summary" class="text-center">Abstract</h1>
@@ -112,12 +111,14 @@ header:
             var mutation_filename = "aav_less5_mutations.tsv";
             var maxnum = 5;
             var plot_data = true;
+            var pos_offset = -137;
         } else {
             var pdbid = "1tem";
             var prediction_filepath = "assets/tables/raw/tem.tsv";
             var mutation_filename = "tem_less5_mutations.tsv";
             var maxnum = 2;
             var plot_data = false;
+            var pos_offset = 2;
         }
         
         var options = {
@@ -134,7 +135,7 @@ header:
         
         LoadTable(prediction_filepath).then(function(rows) {
             LoadTable('assets/tables/mutations/'+mutation_filename).then(function(mutations) {
-                TablePipeline(rows, viewerInstance);
+                TablePipeline(rows, viewerInstance, pos_offset);
                 $("th[name='mutant']").click()
                 if (update) {
                     $("#fitness-query").empty()
@@ -157,10 +158,10 @@ header:
                 });
                 $("#fitness-search").click(function() {
                     var [target_rows, query_mutations] = ProcessQueries('#fitness-query input', rows);
-                    TablePipeline(target_rows, viewerInstance);
+                    TablePipeline(target_rows, viewerInstance, pos_offset);
                 });
                 $("#fitness-search-reset").click(function() {
-                    TablePipeline(rows, viewerInstance);
+                    TablePipeline(rows, viewerInstance, pos_offset);
                     $("#fitness-query").empty();
                     AddQueryMutation(rows, 'mutant', 'fitness-query', 5, 1);
                     LoadProcessedMutationOptions(mutations);
