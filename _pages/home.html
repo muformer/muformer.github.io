@@ -44,9 +44,9 @@ header:
 <script type="text/javascript" src="https://cdn.plot.ly/plotly-2.25.2.min.js" charset="utf-8"></script>
 <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/d3@7"></script>
 <script type="text/javascript" src="assets/js/dataprep.js"></script>
+<script type="text/javascript" src="assets/js/tem1_RL_surface.js"></script>
 
 <div id="summary" style="padding-bottom:1em">
-    <img src="assets/figures/model_overview.png" alt="overview" width="100%">
     <h1 id="header-summary" class="text-center">Abstract</h1>
     <p class="text-justify" style="font-size:large;width:80%;margin: 0 auto">Protein engineering is essential for a variety of applications, such as designing biologic drugs, optimizing enzymes, and developing novel functional molecules. Accurate protein fitness landscape modeling, such as predicting protein properties in sequence space, is critical for efficient protein engineering. Yet, due to the complexity of the landscape and high-dimensional sequence space, it remains as an unsolved problem. In this work, we present μFormer, a deep learning framework that combines a pre-trained protein language model with three scoring modules targeting protein features at multiple levels, to tackle this grand challenge. μFormer achieves state-of-the-art performance across diverse tasks, including predicting high-order mutants, modeling epistatic effects, handling insertion/deletion mutations, and generalizing to out-of-distribution scenarios. On the basis of prediction power, integrating μFormer with a reinforcement learning framework enables efficient exploration of the vast mutant space. We showcase that this integrated approach can design protein variants with up to 5-point mutations and potentially significant enhancement in activity for engineering tasks. The results highlight μFormer as a powerful and versatile tool for protein design, accelerating the development of innovative proteins tailored for specific applications.</p>
 </div>
@@ -55,7 +55,7 @@ header:
         <summary>
             <h1 id="header-results">Results  <i class="fas fa-angle-right"></i></h1>
         </summary>
-        <h2 id="header-results-fitness">Fitness score</h2>
+        <h2 id="header-results-fitness">Fitness score of <span id="fitness-target-select" toshow='aav'><span name="aav" style="font-size:20px;text-decoration:underline;cursor:pointer">AAV</span>/<span name='tem1' style="cursor:pointer">TEM1</span></span></h2>
         <div id="container-results-fitness" style="width:100%">
             <div style="display:inline-block;width:100%;height:470px">
                 <div id="fitness-surfaceplot" style="position: absolute; right: 0px"></div>
@@ -82,6 +82,7 @@ header:
             <h1 id="header-applications">Applications  <i class="fas fa-angle-right"></i></h1>
         </summary>
         <h2 id="header-applications-lactamase">Beta-lactamase</h2>
+        <p class="text-justify" style="font-size:large;margin: 0 auto">We employed the TEM-1-cefotaxime system to investigate if µFormer can effectively guide protein optimization. To achieve this, we developed a reinforcement learning (RL) method to search for TEM-1 variants with 1-5 point mutations that possess enhanced activity against cefotaxime. The RL method utilizes µFormer as the reward function to navigate the search, and enables efficient exploration of the vast mutant space comprising 6 × 10^18 sequences. To ensure candidate diversity, we incorporated Dirichlet noise into the PPO algorithm, which has recently been used to align large language models with human preferences.</p>
         <div id="container-applications-lactamase" style="width: 100%">
             <img src="assets/figures/rl_density.gif" alt="rl_density" width="40%" style="margin: left 0;"/>
             <img src="assets/figures/rl_topk.gif" alt="rl_topk" width="55%" style="margin: right 0;"/>
@@ -95,34 +96,61 @@ header:
             <h1 id="header-method">Method & Concept  <i class="fas fa-angle-right"></i></h1>
         </summary>
         <h2 id="header-method-pretraining">Protein LLM</h2>
+        <p class="text-justify" style="font-size:large;margin: 0 auto">Our µFormer is a deep learning solution for mutation effect prediction, i.e., predicting the fitness score of a mutated protein sequence. Accurate predictions are achieved in two steps: first, we pre-train a masked protein language model (LM) using a large database of unlabeled protein sequences; second, we introduce three scoring modules (each with a small set of new parameters) into the pre-trained protein LM for the final fitness score prediction and train all parameters using a set of mutant protein sequences with measured fitness scores.</p>
+        <img src="assets/figures/model_overview.png" alt="overview" width="100%">
         <h2 id="header-method-rl">Reinforcement Learning</h2>
+        <p class="text-justify" style="font-size:large;margin: 0 auto">Our RL method utilizes the µFormer model as a reward function and searches for high-functioning mutants. In each episode, the RL agent sequentially mutates a single-site residue until reaching a fixed horizon. The RL algorithm alternates between two phases: exploration and learning. During the exploration phase, we use a mutation site policy network and a mutation type policy network to generate potentially high-functioning mutants. During the learning phase, we use the µFormer model to label the generated mutants and update the policy networks to provide mutants with higher fitness scores. </p>
     </details>
 </div>
 
 <script>
-    $(document).ready(function() {
-        var viewerInstance = new PDBeMolstarPlugin();
+    function ChangeFitnessResult(viewerInstance, update=false) {
+        var target = $("#fitness-target-select").attr('toshow');
+        if (target == 'aav') {
+            var pdbid = '1lp3';
+            var prediction_filepath = "assets/tables/predictions/aav_less5.tsv";
+            var mutation_filename = "aav_less5_mutations.tsv";
+            var maxnum = 5;
+            var plot_data = true;
+        } else {
+            var pdbid = "1tem";
+            var prediction_filepath = "assets/tables/raw/tem.tsv";
+            var mutation_filename = "tem_less5_mutations.tsv";
+            var maxnum = 2;
+            var plot_data = false;
+        }
+        
         var options = {
-        moleculeId: '1lp3',
+        moleculeId: pdbid,
         bgColor: {r:255, g:255, b:255},
         hideControls: true,
         }
         var viewerContainer = document.getElementById('fitness-structure');
-        viewerInstance.render(viewerContainer, options);
+        if (update==false) {
+            viewerInstance.render(viewerContainer, options);
+        } else {
+            viewerInstance.visual.update(options);
+        }
         
-        LoadTable('assets/tables/predictions/aav_less5.tsv').then(function(rows) {
-            LoadTable('assets/tables/mutations/aav_less5_mutations.tsv').then(function(mutations) {
+        LoadTable(prediction_filepath).then(function(rows) {
+            LoadTable('assets/tables/mutations/'+mutation_filename).then(function(mutations) {
                 TablePipeline(rows, viewerInstance);
                 $("th[name='mutant']").click()
-                AddQueryMutation(rows, 'mutant', 'fitness-query', 5, 1);
+                if (update) {
+                    $("#fitness-query").empty()
+                    $("#fitness-query").unbind('click');
+                    $("#fitness-search").unbind('click');
+                    $("#fitness-search-reset").unbind('click');
+                    $("#fitness-surfaceplot").empty();
+                }
+                AddQueryMutation(rows, 'mutant', 'fitness-query', maxnum, 1);
                 LoadProcessedMutationOptions(mutations);
                 $("#fitness-query").on('click', "i[class='fas fa-plus']", function() {
                     var curridx = parseInt($(this).attr('curridx'));
-                    AddQueryMutation(rows, 'mutant', 'fitness-query', 5, curridx+1, true);
+                    AddQueryMutation(rows, 'mutant', 'fitness-query', maxnum, curridx+1, true);
                     $(this).remove();
                     var [rest_rows, current_mutations]= ProcessQueries('#fitness-query input', rows);
                     UpdateMutationOptions(rest_rows, current_mutations, "#fitness-mutation-select-"+(curridx+1));
-                    //LoadProcessedMutationOptions(mutations, "#fitness-mutation-select-"+(curridx+1));
                 });
                 $("#fitness-query").on('click', "i[class='fas fa-minus']", function() {
                     $(this).parent().remove();
@@ -138,15 +166,33 @@ header:
                     LoadProcessedMutationOptions(mutations);
                 });
             });
-            LoadTable('assets/tables/plotdata/aav_less5_pred.tsv').then(function(predictions) {
-                LoadTable('assets/tables/plotdata/aav_less5_score.tsv').then(function(scores) {
-                    var [x_names, y_names, prediction_z_data] = PreparePlotData(predictions);
-                    var [x_names, y_names, scores_z_data] = PreparePlotData(scores);
-                    PlotSurface(x_names, y_names, [prediction_z_data], 'fitness-surfaceplot');
+            if (plot_data) {
+                LoadTable('assets/tables/plotdata/aav_less5_pred.tsv').then(function(predictions) {
+                    LoadTable('assets/tables/plotdata/aav_less5_score.tsv').then(function(scores) {
+                        var [x_names, y_names, prediction_z_data] = PreparePlotData(predictions);
+                        var [x_names, y_names, scores_z_data] = PreparePlotData(scores);
+                        PlotSurface(x_names, y_names, [prediction_z_data], 'fitness-surfaceplot');
+                    });
                 });
-            });
+            } else {
+                // Plot_TEM1_surface();
+            }
         });
-        
+    }
+    $(document).ready(function() {
+        var viewerInstance = new PDBeMolstarPlugin();
+        ChangeFitnessResult(viewerInstance);
+
+        $("#fitness-target-select span").click(function() {
+            var target = $(this).attr('name');
+            $("#fitness-target-select").attr('toshow', target);
+            $("#fitness-target-select span").css('text-decoration', 'none');
+            $(this).css('text-decoration', 'underline');
+            $("#fitness-target-select span").css('font-size', 'large');
+            $(this).css('font-size', '20px');
+
+            ChangeFitnessResult(viewerInstance, true);
+        })
     });
     
 </script>

@@ -270,12 +270,12 @@ function UpdateMutationOptions(rows, query_mutations, mutation_select_id="#fitne
     }
     return mutation_options;
 }
-function LoadProcessedMutationOptions(rows, mutation_select_id="#fitness-mutation-select-1", mutation_colname='mutation') {
+function LoadProcessedMutationOptions(rows, mutation_select_pos="fitness-mutation-select-1", mutation_colname='mutation') {
     mutation_options = rows.map(function(row) {
         return row[mutation_colname];
     });
     for (mutation of mutation_options) {
-        $(mutation_select_id).append("<option value='" + mutation + "'>" + "</option>");
+        $("#"+mutation_select_pos).append("<option value='" + mutation + "'>" + "</option>");
     }
     return mutation_options;
 }
