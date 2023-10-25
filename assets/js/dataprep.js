@@ -123,7 +123,7 @@ function PlotSurface(x_names, y_names, z_datas, figpos) {
     var tick_step = 5;
     var layout = {
         title: 'Fitness Landscape',
-        autosize: true,
+        autosize: false,
         width: 500,
         height: 480,
         margin: {
@@ -149,12 +149,12 @@ function PlotSurface(x_names, y_names, z_datas, figpos) {
                 center: {
                     x: 0,
                     y: 0,
-                    z: -0.4,
+                    z: 0.03,
                 },
                 eye: {
-                    x: -1,
-                    y: -2,
-                    z: 0.5,
+                    x: -1.87,
+                    y: -0.88,
+                    z: -0.64,
                 },
             }
         }

@@ -36,6 +36,10 @@ header:
     details[open] summary * i[class="fas fa-angle-right"] {
         transform: rotate(90deg);
     }
+    p[class="text-justify"] {
+        font-size: large;
+        margin: 0 auto
+    }
 </style>
 <!-- <link rel="stylesheet" type="text/css" href="https://www.ebi.ac.uk/pdbe/pdb-component-library/css/pdbe-molstar-3.1.0.css"> -->
 <link rel="stylesheet" type="text/css" href="https://www.ebi.ac.uk/pdbe/pdb-component-library/css/pdbe-molstar-light-3.1.0.css">
@@ -54,7 +58,7 @@ header:
         <summary>
             <h1 id="header-results">Results  <i class="fas fa-angle-right"></i></h1>
         </summary>
-        <h2 id="header-results-fitness">Fitness score of <span id="fitness-target-select" toshow='aav'><span name="aav" style="font-size:20px;text-decoration:underline;cursor:pointer">AAV</span>/<span name='tem1' style="cursor:pointer">TEM1</span></span></h2>
+        <h2 id="header-results-fitness">Fitness score of <span id="fitness-target-select" toshow='tem1'><span name='tem1' style="cursor:pointer;font-size:20px;text-decoration:underline">TEM1</span>/<span name="aav" style="cursor:pointer">AAV</span></span></h2>
         <div id="container-results-fitness" style="width:100%">
             <div style="display:inline-block;width:100%;height:470px">
                 <div id="fitness-surfaceplot" style="position: absolute; right: 0px"></div>
@@ -81,7 +85,7 @@ header:
             <h1 id="header-applications">Applications  <i class="fas fa-angle-right"></i></h1>
         </summary>
         <h2 id="header-applications-lactamase">Beta-lactamase</h2>
-        <p class="text-justify" style="font-size:large;margin: 0 auto">We employed the TEM-1-cefotaxime system to investigate if µFormer can effectively guide protein optimization. To achieve this, we developed a reinforcement learning (RL) method to search for TEM-1 variants with 1-5 point mutations that possess enhanced activity against cefotaxime. The RL method utilizes µFormer as the reward function to navigate the search, and enables efficient exploration of the vast mutant space comprising 6 × 10^18 sequences. To ensure candidate diversity, we incorporated Dirichlet noise into the PPO algorithm, which has recently been used to align large language models with human preferences.</p>
+        <p class="text-justify">We employed the TEM-1-cefotaxime system to investigate if µFormer can effectively guide protein optimization. To achieve this, we developed a reinforcement learning (RL) method to search for TEM-1 variants with 1-5 point mutations that possess enhanced activity against cefotaxime. The RL method utilizes µFormer as the reward function to navigate the search, and enables efficient exploration of the vast mutant space comprising 6 × 10^18 sequences. To ensure candidate diversity, we incorporated Dirichlet noise into the PPO algorithm, which has recently been used to align large language models with human preferences.</p>
         <div id="container-applications-lactamase" style="width: 100%">
             <img src="assets/figures/rl_density.gif" alt="rl_density" width="40%" style="margin: left 0;"/>
             <img src="assets/figures/rl_topk.gif" alt="rl_topk" width="55%" style="margin: right 0;"/>
@@ -95,10 +99,11 @@ header:
             <h1 id="header-method">Method & Concept  <i class="fas fa-angle-right"></i></h1>
         </summary>
         <h2 id="header-method-pretraining">Protein LLM</h2>
-        <p class="text-justify" style="font-size:large;margin: 0 auto">Our µFormer is a deep learning solution for mutation effect prediction, i.e., predicting the fitness score of a mutated protein sequence. Accurate predictions are achieved in two steps: first, we pre-train a masked protein language model (LM) using a large database of unlabeled protein sequences; second, we introduce three scoring modules (each with a small set of new parameters) into the pre-trained protein LM for the final fitness score prediction and train all parameters using a set of mutant protein sequences with measured fitness scores.</p>
-        <img src="assets/figures/model_overview.png" alt="overview" width="100%">
+        <p class="text-justify">Our µFormer is a deep learning solution for mutation effect prediction, i.e., predicting the fitness score of a mutated protein sequence. Accurate predictions are achieved in two steps: first, we pre-train a masked protein language model (LM) using a large database of unlabeled protein sequences; second, we introduce three scoring modules (each with a small set of new parameters) into the pre-trained protein LM for the final fitness score prediction and train all parameters using a set of mutant protein sequences with measured fitness scores.</p>
+        <img src="assets/figures/model_overview.png" alt="muformer-model" width="100%">
         <h2 id="header-method-rl">Reinforcement Learning</h2>
-        <p class="text-justify" style="font-size:large;margin: 0 auto">Our RL method utilizes the µFormer model as a reward function and searches for high-functioning mutants. In each episode, the RL agent sequentially mutates a single-site residue until reaching a fixed horizon. The RL algorithm alternates between two phases: exploration and learning. During the exploration phase, we use a mutation site policy network and a mutation type policy network to generate potentially high-functioning mutants. During the learning phase, we use the µFormer model to label the generated mutants and update the policy networks to provide mutants with higher fitness scores. </p>
+        <p class="text-justify">Our RL method utilizes the µFormer model as a reward function and searches for high-functioning mutants. In each episode, the RL agent sequentially mutates a single-site residue until reaching a fixed horizon. The RL algorithm alternates between two phases: exploration and learning. During the exploration phase, we use a mutation site policy network and a mutation type policy network to generate potentially high-functioning mutants. During the learning phase, we use the µFormer model to label the generated mutants and update the policy networks to provide mutants with higher fitness scores. During the exploration phase, we use a mutation site policy network and a mutation type policy network to generate potentially high-functioning mutants, <b>aided by Dirichlet noise</b>.</p>
+        <img style="margin-top: 1em" src="assets/figures/RL_method.png" alt="rl-method" width="100%">
     </details>
 </div>
 
@@ -110,14 +115,14 @@ header:
             var prediction_filepath = "assets/tables/predictions/aav_less5.tsv";
             var mutation_filename = "aav_less5_mutations.tsv";
             var maxnum = 5;
-            var plot_data = true;
+            var plot_filename = "aav_less5_pred.tsv";
             var pos_offset = -137;
         } else {
             var pdbid = "1tem";
             var prediction_filepath = "assets/tables/raw/tem.tsv";
             var mutation_filename = "tem_less5_mutations.tsv";
             var maxnum = 2;
-            var plot_data = false;
+            var plot_filename = "tem_surface.tsv";
             var pos_offset = 2;
         }
         
@@ -167,17 +172,10 @@ header:
                     LoadProcessedMutationOptions(mutations);
                 });
             });
-            if (plot_data) {
-                LoadTable('assets/tables/plotdata/aav_less5_pred.tsv').then(function(predictions) {
-                    LoadTable('assets/tables/plotdata/aav_less5_score.tsv').then(function(scores) {
-                        var [x_names, y_names, prediction_z_data] = PreparePlotData(predictions);
-                        var [x_names, y_names, scores_z_data] = PreparePlotData(scores);
-                        PlotSurface(x_names, y_names, [prediction_z_data], 'fitness-surfaceplot');
-                    });
-                });
-            } else {
-                // Plot_TEM1_surface();
-            }
+            LoadTable('assets/tables/plotdata/'+plot_filename).then(function(predictions) {
+                var [x_names, y_names, prediction_z_data] = PreparePlotData(predictions);
+                PlotSurface(x_names, y_names, [prediction_z_data], 'fitness-surfaceplot');
+            });
         });
     }
     $(document).ready(function() {
