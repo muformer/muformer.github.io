@@ -130,6 +130,7 @@ header:
         moleculeId: pdbid,
         bgColor: {r:255, g:255, b:255},
         hideControls: true,
+        hideStructure: ['het','water','nonStandard']
         }
         var viewerContainer = document.getElementById('fitness-structure');
         if (update==false) {
@@ -166,6 +167,7 @@ header:
                     TablePipeline(target_rows, viewerInstance, pos_offset);
                 });
                 $("#fitness-search-reset").click(function() {
+                    viewerInstance.visual.update(options);
                     TablePipeline(rows, viewerInstance, pos_offset);
                     $("#fitness-query").empty();
                     AddQueryMutation(rows, 'mutant', 'fitness-query', 5, 1);

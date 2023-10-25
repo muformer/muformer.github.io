@@ -59,11 +59,10 @@ function ShowPagedTable(rows, tablepos, colnames, pageidx, instance, recperpage=
                 auth_asym_id: 'A',
                 auth_residue_number: position,
                 color:{r:255,g:0,b:0},
-                representation:'line'
+                representation:'line',
             }
         });
-        instance.visual.update()
-        instance.visual.select({data:instance_selection})
+        instance.visual.select({data:instance_selection,nonSelectedColor:{r:255,g:255,b:255}})
         instance.visual.highlight({data:instance_selection})
     });
 }
